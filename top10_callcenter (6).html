@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Топ-10 операторов</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#F5A623;--silver:#A8A8A8;--bronze:#CD7C3A;--bg:#0A0E1A;--surface:#111827;--border:rgba(255,255,255,0.07);--text:#F0F4FF;--muted:rgba(240,244,255,0.45);--accent:#4F6EF7;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Golos Text',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(79,110,247,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(79,110,247,0.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+  .container{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:2rem 1.5rem 3rem;}
+  .top-bar{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:2rem;}
+  .title-block h1{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:2px;color:var(--text);line-height:1;}
+  .title-block h1 span{color:var(--accent);}
+  .subtitle{font-size:13px;color:var(--muted);margin-top:6px;}
+  .right-block{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+  .month-select{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Golos Text',sans-serif;font-size:14px;padding:8px 14px;border-radius:8px;cursor:pointer;outline:none;}
+  .status-row{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);}
+  .dot{width:7px;height:7px;border-radius:50%;background:#888;flex-shrink:0;}
+  .dot.ok{background:#22C55E;box-shadow:0 0 6px #22C55E88;animation:glow 2s infinite;}
+  .dot.error{background:#EF4444;}
+  @keyframes glow{0%,100%{opacity:1}50%{opacity:0.4}}
+  .dept-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;}
+  .dept-tab{padding:8px 18px;border-radius:30px;border:1px solid var(--border);font-family:'Golos Text',sans-serif;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:var(--muted);transition:all 0.2s;}
+  .dept-tab:hover{border-color:rgba(79,110,247,0.4);color:var(--text);}
+  .dept-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .leaderboard{display:flex;flex-direction:column;gap:8px;}
+  .row{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 18px;transition:transform 0.15s;animation:slideIn 0.3s ease both;}
+  .row:hover{transform:translateX(4px);}
+  @keyframes slideIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+  .row.r1{border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.07);}
+  .row.r2{border-color:rgba(168,168,168,0.35);background:rgba(168,168,168,0.06);}
+  .row.r3{border-color:rgba(205,124,58,0.4);background:rgba(205,124,58,0.07);}
+  .row:nth-child(1){animation-delay:0s}.row:nth-child(2){animation-delay:.04s}.row:nth-child(3){animation-delay:.08s}
+  .row:nth-child(4){animation-delay:.12s}.row:nth-child(5){animation-delay:.16s}.row:nth-child(6){animation-delay:.20s}
+  .row:nth-child(7){animation-delay:.24s}.row:nth-child(8){animation-delay:.28s}.row:nth-child(9){animation-delay:.32s}.row:nth-child(10){animation-delay:.36s}
+  .rank{font-family:'Bebas Neue',sans-serif;font-size:22px;min-width:34px;text-align:center;color:var(--muted);line-height:1;}
+  .rank.m1{color:var(--gold);font-size:26px}.rank.m2{color:var(--silver);font-size:26px}.rank.m3{color:var(--bronze);font-size:26px}
+  .avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+  .name-col{flex:1;min-width:0;}
+  .name{font-size:15px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bar-col{flex:2;}
+  .bar-track{width:100%;height:6px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:3px;transition:width 0.7s cubic-bezier(.4,0,.2,1);}
+  .score{font-family:'Bebas Neue',sans-serif;font-size:26px;min-width:52px;text-align:right;color:var(--text);letter-spacing:1px;line-height:1;}
+  .status-msg{text-align:center;padding:3rem 1rem;color:var(--muted);font-size:15px;}
+  .status-msg.err{color:#F87171;}
+  .retry-btn{margin-top:14px;padding:9px 22px;background:transparent;border:1px solid rgba(239,68,68,0.4);color:#F87171;border-radius:8px;font-family:'Golos Text',sans-serif;font-size:13px;cursor:pointer;}
+  .footer{margin-top:2rem;text-align:center;font-size:12px;color:rgba(240,244,255,0.2);font-variant-numeric:tabular-nums;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="top-bar">
+    <div class="title-block">
+      <h1>ТОП<span>-10</span></h1>
+      <div class="subtitle" id="subtitle">Загрузка данных...</div>
+    </div>
+    <div class="right-block">
+      <select class="month-select" id="monthSel" onchange="renderAll()" disabled>
+        <option>Загрузка...</option>
+      </select>
+      <div class="status-row">
+        <div class="dot" id="statusDot"></div>
+        <span id="statusText">Подключаемся...</span>
+      </div>
+    </div>
+  </div>
+  <div class="dept-tabs" id="tabs"></div>
+  <div class="leaderboard" id="board"><div class="status-msg">Загрузка данных из Google Sheets...</div></div>
+  <div class="footer" id="footer"></div>
+</div>
+<script>
+const CSV_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vTrlqHtiU1YuuUMwAA70imU4fxdrkJv-KP6ty6LuiVn-kT-RWQImhhQrk3nWvKCzt2N0WQChwgQsFEx/pub?gid=1025852169&single=true&output=csv';
+
+// Нужные колонки (до M включительно):
+// Month(0) Week(1) Check_Date(2) Case_Date(3) Sector(4) Channel(5) Controller(6) Operator(7) Score(8) Is_Critical(9) Critical_Type(10) Case_ID(11) Supervisor(12)
+const COL={Month:0,Check_Date:2,Sector:4,Operator:7,Score:8};
+
+const DEPARTMENTS=[
+  {id:'fl', label:'Служба заботы', sectors:['SP_Call','SP_Chat']},
+  {id:'ts', label:'Телемаркетинг', sectors:['TS_Call']},
+  {id:'nps',label:'NPS',           sectors:['NPS']},
+  {id:'cok',label:'Курьеры',       sectors:['COK_Call']},
+];
+const BAR_COLORS=['#F5A623','#A8A8A8','#CD7C3A','#4F6EF7','#22C55E','#EC4899','#8B5CF6','#F97316','#14B8A6','#EAB308'];
+const AVATARS=[
+  {bg:'rgba(245,166,35,0.15)',color:'#F5A623'},{bg:'rgba(79,110,247,0.15)',color:'#818CF8'},
+  {bg:'rgba(34,197,94,0.15)',color:'#4ADE80'},{bg:'rgba(236,72,153,0.15)',color:'#F472B6'},
+  {bg:'rgba(139,92,246,0.15)',color:'#A78BFA'},{bg:'rgba(249,115,22,0.15)',color:'#FB923C'},
+  {bg:'rgba(20,184,166,0.15)',color:'#2DD4BF'},{bg:'rgba(234,179,8,0.15)',color:'#FACC15'},
+  {bg:'rgba(168,168,168,0.15)',color:'#D1D5DB'},{bg:'rgba(205,124,58,0.15)',color:'#CD7C3A'},
+];
+const MONTHS_RU=['','Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+let RAW=[], activeDept='fl';
+
+function formatMonth(m){
+  if(!m)return'';
+  const p=m.split('-');
+  if(p.length===2)return(MONTHS_RU[parseInt(p[1])]||p[1])+' '+p[0];
+  return m;
+}
+
+function parseRows(text){
+  // Берём только первые 13 колонок (A-M) из каждой строки — игнорируем всё после M
+  const lines=text.trim().split(/\r?\n/);
+  if(lines.length<2)return[];
+  const result=[];
+  for(let i=1;i<lines.length;i++){
+    const line=lines[i];
+    if(!line.trim())continue;
+    // Парсим только первые 13 значений
+    const vals=[];
+    let cur='',inQ=false,count=0;
+    for(let j=0;j<line.length&&count<13;j++){
+      const c=line[j];
+      if(c==='"'){
+        if(inQ&&line[j+1]==='"'){cur+='"';j++;}
+        else inQ=!inQ;
+      } else if(c===','&&!inQ){
+        vals.push(cur.trim());cur='';count++;
+      } else cur+=c;
+    }
+    vals.push(cur.trim()); // последнее значение
+    result.push(vals);
+  }
+  return result;
+}
+
+function getMonthFromCheckDate(cd){
+  if(!cd)return'';
+  const p=cd.replace(/"/g,'').trim().split('.');
+  if(p.length===3&&p[2].length>=4)return p[2].substring(0,4)+'-'+p[1].padStart(2,'0');
+  return'';
+}
+
+function getTop(month,deptId){
+  const dept=DEPARTMENTS.find(d=>d.id===deptId);
+  const rows=RAW.filter(r=>r.month===month&&dept.sectors.includes(r.sector));
+  const map={};
+  rows.forEach(r=>{
+    if(!r.operator)return;
+    if(!map[r.operator])map[r.operator]=[];
+    map[r.operator].push(r.score);
+  });
+  return Object.entries(map).map(([op,scores])=>({
+    Operator:op,
+    Score:Math.round(scores.reduce((a,b)=>a+b,0)/scores.length*10)/10,
+  })).sort((a,b)=>b.Score-a.Score).slice(0,10);
+}
+
+async function loadData(){
+  try{
+    const res=await fetch(CSV_URL);
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const text=await res.text();
+    const rows=parseRows(text);
+
+    RAW=rows.map(vals=>({
+      month: getMonthFromCheckDate(vals[COL.Check_Date])||'',
+      sector:(vals[COL.Sector]||'').replace(/"/g,'').trim(),
+      operator:(vals[COL.Operator]||'').replace(/"/g,'').trim(),
+      score: parseFloat((vals[COL.Score]||'0').replace(/"/g,''))||0,
+    })).filter(r=>r.operator&&r.month&&r.sector);
+
+    const months=[...new Set(RAW.map(r=>r.month))].filter(Boolean).sort().reverse();
+    const sel=document.getElementById('monthSel');
+    sel.innerHTML='';
+    months.forEach((m,i)=>{
+      const o=document.createElement('option');
+      o.value=m;o.textContent=formatMonth(m);
+      if(i===0)o.selected=true;
+      sel.appendChild(o);
+    });
+    sel.disabled=false;
+    document.getElementById('statusDot').className='dot ok';
+    document.getElementById('statusText').textContent='Обновлено: '+new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+    renderAll();
+  }catch(e){
+    document.getElementById('statusDot').className='dot error';
+    document.getElementById('statusText').textContent='Ошибка загрузки';
+    document.getElementById('board').innerHTML='<div class="status-msg err">Не удалось загрузить данные.<br><small style="opacity:.6">'+e.message+'</small><br><button class="retry-btn" onclick="loadData()">Попробовать снова</button></div>';
+  }
+}
+
+function renderTabs(){
+  const el=document.getElementById('tabs');el.innerHTML='';
+  DEPARTMENTS.forEach(d=>{
+    const btn=document.createElement('button');
+    btn.className='dept-tab'+(d.id===activeDept?' active':'');
+    btn.textContent=d.label;
+    btn.onclick=()=>{activeDept=d.id;renderTabs();renderBoard();};
+    el.appendChild(btn);
+  });
+}
+
+function renderBoard(){
+  const m=document.getElementById('monthSel').value;
+  document.getElementById('subtitle').textContent=formatMonth(m)+' · данные из Google Sheets';
+  const list=getTop(m,activeDept);
+  const board=document.getElementById('board');
+  if(!list.length){board.innerHTML='<div class="status-msg">Нет данных для этого отдела за выбранный месяц</div>';return;}
+  const max=Math.max(...list.map(p=>p.Score));
+  const MEDALS={1:'🥇',2:'🥈',3:'🥉'};
+  const RC={1:'r1',2:'r2',3:'r3'};
+  const MK={1:'m1',2:'m2',3:'m3'};
+  board.innerHTML='';
+  list.forEach((p,i)=>{
+    const rank=i+1;
+    const av=AVATARS[i%AVATARS.length];
+    const pct=max>0?Math.round((p.Score/max)*100):0;
+    const initStr=p.Operator.trim().split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+    const row=document.createElement('div');
+    row.className='row'+(RC[rank]?' '+RC[rank]:'');
+    row.innerHTML=`<div class="rank ${MK[rank]||''}">${MEDALS[rank]||rank}</div><div class="avatar" style="background:${av.bg};color:${av.color}">${initStr}</div><div class="name-col"><div class="name">${p.Operator}</div></div><div class="bar-col"><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${BAR_COLORS[i]}"></div></div></div><div class="score">${p.Score}</div>`;
+    board.appendChild(row);
+  });
+}
+
+function renderAll(){renderTabs();renderBoard();}
+
+function updateFooter(){
+  const now=new Date(),next=new Date(now);next.setHours(24,0,0,0);
+  const d=Math.floor((next-now)/1000);
+  const h=Math.floor(d/3600),min=Math.floor((d%3600)/60),s=d%60;
+  const p=n=>String(n).padStart(2,'0');
+  document.getElementById('footer').textContent=`Следующее обновление через ${p(h)}:${p(min)}:${p(s)}`;
+}
+
+loadData();
+updateFooter();
+setInterval(updateFooter,1000);
+setInterval(loadData,60*60*1000);
+</script>
+</body>
+</html>
