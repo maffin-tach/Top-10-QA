@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Топ-10 операторов</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:   #F5A623;
+    --silver: #A8A8A8;
+    --bronze: #CD7C3A;
+    --bg:     #0A0E1A;
+    --surface:#111827;
+    --border: rgba(255,255,255,0.07);
+    --text:   #F0F4FF;
+    --muted:  rgba(240,244,255,0.45);
+    --accent: #4F6EF7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Golos Text', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Фоновая сетка */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,110,247,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,110,247,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 3rem;
+  }
+
+  /* ШАПКА */
+  .top-bar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 2rem;
+  }
+
+  .title-block {}
+
+  .title-block h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .title-block h1 span {
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .right-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+  }
+
+  .month-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Golos Text', sans-serif;
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .month-select:focus { border-color: var(--accent); }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #888;
+    flex-shrink: 0;
+  }
+  .dot.ok    { background: #22C55E; box-shadow: 0 0 6px #22C55E88; animation: glow 2s infinite; }
+  .dot.error { background: #EF4444; }
+
+  @keyframes glow {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+
+  /* ВКЛАДКИ ОТДЕЛОВ */
+  .dept-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .dept-tab {
+    padding: 8px 18px;
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    font-family: 'Golos Text', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .dept-tab:hover { border-color: rgba(79,110,247,0.4); color: var(--text); }
+
+  .dept-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .dept-tab.low { opacity: 0.45; }
+  .dept-tab.low.active { opacity: 1; }
+
+  .dept-tab small {
+    display: block;
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.75;
+    margin-top: 1px;
+  }
+
+  /* СПИСОК */
+  .leaderboard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 18px;
+    transition: transform 0.15s, border-color 0.15s;
+    animation: slideIn 0.3s ease both;
+  }
+
+  .row:hover { transform: translateX(4px); border-color: rgba(79,110,247,0.3); }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-12px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .row.r1 { border-color: rgba(245,166,35,0.4); background: rgba(245,166,35,0.07); }
+  .row.r2 { border-color: rgba(168,168,168,0.35); background: rgba(168,168,168,0.06); }
+  .row.r3 { border-color: rgba(205,124,58,0.4); background: rgba(205,124,58,0.07); }
+
+  .rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    min-width: 34px;
+    text-align: center;
+    color: var(--muted);
+    line-height: 1;
+  }
+
+  .rank.m1 { color: var(--gold);   font-size: 26px; }
+  .rank.m2 { color: var(--silver); font-size: 26px; }
+  .rank.m3 { color: var(--bronze); font-size: 26px; }
+
+  .avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+
+  .name-col { flex: 1; min-width: 0; }
+
+  .name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .channel-tag {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .bar-col { flex: 2; }
+
+  .bar-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.7s cubic-bezier(.4,0,.2,1);
+  }
+
+  .score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    min-width: 52px;
+    text-align: right;
+    color: var(--text);
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  /* СТАТУС */
+  .status-msg {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .status-msg.err { color: #F87171; }
+
+  .retry-btn {
+    margin-top: 14px;
+    padding: 9px 22px;
+    background: transparent;
+    border: 1px solid rgba(239,68,68,0.4);
+    color: #F87171;
+    border-radius: 8px;
+    font-family: 'Golos Text', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .retry-btn:hover { background: rgba(239,68,68,0.1); }
+
+  /* ФУТЕР */
+  .footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(240,244,255,0.2);
+    letter-spacing: 0.5px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Анимация задержки строк */
+  .row:nth-child(1)  { animation-delay: 0.00s; }
+  .row:nth-child(2)  { animation-delay: 0.04s; }
+  .row:nth-child(3)  { animation-delay: 0.08s; }
+  .row:nth-child(4)  { animation-delay: 0.12s; }
+  .row:nth-child(5)  { animation-delay: 0.16s; }
+  .row:nth-child(6)  { animation-delay: 0.20s; }
+  .row:nth-child(7)  { animation-delay: 0.24s; }
+  .row:nth-child(8)  { animation-delay: 0.28s; }
+  .row:nth-child(9)  { animation-delay: 0.32s; }
+  .row:nth-child(10) { animation-delay: 0.36s; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="top-bar">
+    <div class="title-block">
+      <h1>ТОП<span>-10</span></h1>
+      <div class="subtitle" id="subtitle">Загрузка данных...</div>
+    </div>
+    <div class="right-block">
+      <select class="month-select" id="monthSel" onchange="renderAll()" disabled>
+        <option>Загрузка...</option>
+      </select>
+      <div class="status-row">
+        <div class="dot" id="statusDot"></div>
+        <span id="statusText">Подключаемся...</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dept-tabs" id="tabs"></div>
+  <div class="leaderboard" id="board">
+    <div class="status-msg">Загрузка данных из Google Sheets...</div>
+  </div>
+  <div class="footer" id="footer"></div>
+
+</div>
+
+<script>
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTrlqHtiU1YuuUMwAA70imU4fxdrkJv-KP6ty6LuiVn-kT-RWQImhhQrk3nWvKCzt2N0WQChwgQsFEx/pub?gid=1025852169&single=true&output=csv';
+
+const DEPARTMENTS = [
+  { id:'fl',  label:'Первая линия',  sectors:['SP_Call','SP_Chat'], low:false },
+  { id:'ts',  label:'Телемаркетинг', sectors:['TS_Call'],           low:false },
+  { id:'nps', label:'NPS',           sectors:['NPS'],               low:false },
+  { id:'cok', label:'Курьеры',       sectors:['COK_Call'],          low:false },
+];
+
+const BAR_COLORS = [
+  '#F5A623','#A8A8A8','#CD7C3A',
+  '#4F6EF7','#22C55E','#EC4899',
+  '#8B5CF6','#F97316','#14B8A6','#EAB308'
+];
+
+const AVATARS = [
+  {bg:'rgba(245,166,35,0.15)',  color:'#F5A623'},
+  {bg:'rgba(79,110,247,0.15)',  color:'#818CF8'},
+  {bg:'rgba(34,197,94,0.15)',   color:'#4ADE80'},
+  {bg:'rgba(236,72,153,0.15)',  color:'#F472B6'},
+  {bg:'rgba(139,92,246,0.15)',  color:'#A78BFA'},
+  {bg:'rgba(249,115,22,0.15)',  color:'#FB923C'},
+  {bg:'rgba(20,184,166,0.15)',  color:'#2DD4BF'},
+  {bg:'rgba(234,179,8,0.15)',   color:'#FACC15'},
+  {bg:'rgba(168,168,168,0.15)', color:'#D1D5DB'},
+  {bg:'rgba(205,124,58,0.15)',  color:'#CD7C3A'},
+];
+
+const MONTHS_RU = ['','Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+let RAW = [];
+let activeDept = 'fl';
+
+function formatMonth(m) {
+  if (!m) return '';
+  const p = m.split('-');
+  if (p.length === 2) return (MONTHS_RU[parseInt(p[1])] || p[1]) + ' ' + p[0];
+  return m;
+}
+
+function splitLine(line) {
+  const res = []; let cur = '', inQ = false;
+  for (const c of line) {
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { res.push(cur.trim()); cur = ''; }
+    else cur += c;
+  }
+  res.push(cur.trim());
+  return res.map(v => v.replace(/^"|"$/g,'').trim());
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = splitLine(lines[0]);
+  return lines.slice(1).map(l => {
+    const v = splitLine(l);
+    const o = {};
+    headers.forEach((h, i) => o[h] = v[i] || '');
+    return o;
+  });
+}
+
+function initials(name) {
+  return name.trim().split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).toUpperCase ? 
+    name.trim().split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('') : '';
+}
+
+function getTop(month, deptId) {
+  const dept = DEPARTMENTS.find(d => d.id === deptId);
+  const rows = RAW.filter(r => r.Month === month && dept.sectors.includes(r.Sector));
+  const map = {};
+  rows.forEach(r => {
+    if (!r.Operator) return;
+    if (!map[r.Operator]) map[r.Operator] = { scores:[], channels: new Set() };
+    map[r.Operator].scores.push(r.Score);
+    map[r.Operator].channels.add(r.Sector);
+  });
+  return Object.entries(map).map(([op, d]) => ({
+    Operator: op,
+    Score: Math.round(d.scores.reduce((a,b)=>a+b,0) / d.scores.length),
+    Channels: [...d.channels],
+  })).sort((a,b) => b.Score - a.Score).slice(0,10);
+}
+
+function channelLabel(channels, deptId) {
+  return '';
+}
+
+async function loadData() {
+  try {
+    const res = await fetch(CSV_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    const rows = parseCSV(text);
+
+    RAW = rows.map(r => {
+      let month = '';
+      const cd = (r.Check_Date || '').trim();
+      if (cd.includes('.')) {
+        const p = cd.split('.');
+        if (p.length === 3) month = p[2].substring(0,4) + '-' + p[1].padStart(2,'0');
+      }
+      if (!month) month = r.Month || '';
+      return {
+        Month:    month,
+        Sector:   r.Sector   || '',
+        Operator: r.Operator || '',
+        Score:    parseFloat(r.Score || 0),
+      };
+    }).filter(r => r.Operator && r.Month && !isNaN(r.Score));
+
+    const months = [...new Set(RAW.map(r => r.Month))].filter(Boolean).sort().reverse();
+    const sel = document.getElementById('monthSel');
+    sel.innerHTML = '';
+    months.forEach((m, i) => {
+      const o = document.createElement('option');
+      o.value = m; o.textContent = formatMonth(m);
+      if (i === 0) o.selected = true;
+      sel.appendChild(o);
+    });
+    sel.disabled = false;
+
+    document.getElementById('statusDot').className = 'dot ok';
+    document.getElementById('statusText').textContent = 'Обновлено: ' + new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
+    renderAll();
+  } catch(e) {
+    document.getElementById('statusDot').className = 'dot error';
+    document.getElementById('statusText').textContent = 'Ошибка загрузки';
+    document.getElementById('board').innerHTML = `
+      <div class="status-msg err">
+        Не удалось загрузить данные.<br>
+        <small style="opacity:.6">${e.message}</small><br>
+        <button class="retry-btn" onclick="loadData()">Попробовать снова</button>
+      </div>`;
+  }
+}
+
+function renderTabs() {
+  const el = document.getElementById('tabs');
+  el.innerHTML = '';
+  DEPARTMENTS.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'dept-tab' + (d.id === activeDept ? ' active' : '') + (d.low ? ' low' : '');
+    btn.innerHTML = d.label;
+    btn.onclick = () => { activeDept = d.id; renderTabs(); renderBoard(); };
+    el.appendChild(btn);
+  });
+}
+
+function renderBoard() {
+  const m = document.getElementById('monthSel').value;
+  document.getElementById('subtitle').textContent = formatMonth(m) + ' · данные из Google Sheets';
+  const list = getTop(m, activeDept);
+  const board = document.getElementById('board');
+
+  if (!list.length) {
+    board.innerHTML = '<div class="status-msg">Нет данных для этого отдела за выбранный месяц</div>';
+    return;
+  }
+
+  const max = Math.max(...list.map(p => p.Score));
+  board.innerHTML = '';
+
+  const MEDALS = {1:'🥇', 2:'🥈', 3:'🥉'};
+  const RANK_CLASS = {1:'m1', 2:'m2', 3:'m3'};
+  const ROW_CLASS = {1:'r1', 2:'r2', 3:'r3'};
+
+  list.forEach((p, i) => {
+    const rank = i + 1;
+    const av = AVATARS[i % AVATARS.length];
+    const pct = Math.round((p.Score / max) * 100);
+    const badge = channelLabel(p.Channels, activeDept);
+    const initStr = p.Operator.trim().split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+
+    const row = document.createElement('div');
+    row.className = 'row' + (ROW_CLASS[rank] ? ' ' + ROW_CLASS[rank] : '');
+    row.innerHTML = `
+      <div class="rank ${RANK_CLASS[rank] || ''}">${MEDALS[rank] || rank}</div>
+      <div class="avatar" style="background:${av.bg};color:${av.color}">${initStr}</div>
+      <div class="name-col">
+        <div class="name">${p.Operator}</div>
+        ${badge ? `<div class="channel-tag">${badge}</div>` : ''}
+      </div>
+      <div class="bar-col">
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${pct}%;background:${BAR_COLORS[i]}"></div>
+        </div>
+      </div>
+      <div class="score">${p.Score}</div>
+    `;
+    board.appendChild(row);
+  });
+}
+
+function renderAll() { renderTabs(); renderBoard(); }
+
+function updateFooter() {
+  const now = new Date();
+  const next = new Date(now); next.setHours(24,0,0,0);
+  const diff = Math.floor((next - now) / 1000);
+  const h = Math.floor(diff/3600), min = Math.floor((diff%3600)/60), s = diff%60;
+  const p = n => String(n).padStart(2,'0');
+  document.getElementById('footer').textContent = `Следующее обновление через ${p(h)}:${p(min)}:${p(s)}`;
+}
+
+loadData();
+updateFooter();
+setInterval(updateFooter, 1000);
+setInterval(loadData, 60 * 60 * 1000);
+</script>
+</body>
+</html>
